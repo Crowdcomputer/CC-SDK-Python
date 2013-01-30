@@ -10,3 +10,6 @@ class TokenNotDefinedException(Exception):
     
 class MethodNotSupported(Exception):
     Message='The method is not supported'
+    
+class MissingConfiguration(Exception):
+    Message='Parameter is missing in the configuration'
