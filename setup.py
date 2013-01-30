@@ -16,7 +16,6 @@ setup(
     description = ("The SDK for python to interact with the Crowd Computer"),
     license = "MIT",
     packages=['ccsdkpy', 'testing'],
-    long_description=read('README'),
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Topic :: Software Development",
