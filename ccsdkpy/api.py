@@ -9,6 +9,7 @@ from ccsdkpy.auth import CMAuth
 from ccsdkpy.exceptions import MethodNotSupported
 import requests
 import logging
+from django.conf import settings
 #logging.basicConfig(level=logging.DEBUG)
 #
 log = logging.getLogger(__name__)
@@ -26,12 +27,13 @@ class API():
     __token = ''
     __url = ''
     
-    def __init__(self, t, location):
+    def __init__(self, t):
 #    def register(self,t):
 #        d = shelve.open(__FILENAME)
 #        d['token'] = t 
+        log.debug("Location %s " , settings.CM_LOCATION)
         self.__token=t;
-        self.__url=location
+        self.__url=settings.CM_LOCATION
 
     def __module_exists(self,module_name):
         try:
@@ -64,12 +66,53 @@ class API():
         return res
     
     def processDetails(self, **pars):
-        url=self.__url+'api/processes/pk/'.replace('pk', pars['pk'])
+        url=self.__url+'api/processes/pk/'.replace('pk', str(pars['pk']))
         res=self.apiCall(GET,url)
         log.debug("Process Detail res %s" % res.text)
         return res
 
-
+    def createTask(self, **pars):
+        url=self.__url+'api/processes/pk/task/'.replace('pk', str(pars['pk']))
+        res=self.apiCall(POST,url,pars)
+        log.debug("Task Create res %s" % res.text)
+        return res
+    
+    def startStopProcess(self, **pars):
+        url=self.__url+"api/processes/pk/startstop/".replace('pk', str(pars['pk']))
+        res=self.apiCall(POST,url,pars)
+        log.debug("StartStop res %s" % res.text)
+        return res
+    
+    def taskInstances(self, **pars):
+        url=self.__url+"api/task/pk/taskinstances/".replace('pk', str(pars['pk']))
+        res=self.apiCall(GET,url)
+        log.debug("taskInstance res %s" % res.text)
+        return res
+    
+    def taskInstanceDetail(self, **pars):
+        url=self.__url+"api/taskinstance/pk/".replace('pk', str(pars['pk']))
+        res=self.apiCall(GET,url)
+        log.debug("taskInstance res %s" % res.text)
+        return res
+    
+    def userGetOrCreate(self, **pars):
+        url=self.__url+"api/users/"
+        res=self.apiCall(POST,url,pars)
+        log.debug("User res %s" % res.text)
+        return res
+    
+    def updateInsance(self, **pars):
+        url=self.__url+"api/taskinstance/pk/".replace('pk', str(pars['pk']))
+        log.debug('updaate data %s' , pars['data'])
+        res=self.apiCall(PUT,url,pars['data'])
+        log.debug("taskInstanceUpdate res %s" % res.text)
+        return res
+        
+    def whoami(self):
+        url=self.__url+"api/users/me/"
+        res=self.apiCall(GET,url)
+        log.debug("me res %s" % res.text)
+        return res
 #process details
 
 #process start
@@ -93,7 +136,7 @@ class API():
             return  self.__apicallGet(url)
         elif (method == POST):
             return self.__apicallPost(url,data)
-        elif (method == GET):
+        elif (method == PUT):
             return self.__apicallPut(url,data)
         else:
             raise MethodNotSupported
@@ -113,7 +156,7 @@ class API():
         
     def validCall(self,r):
         log.warn("TODO")
-        if r.status_code == 500 or 400:
+        if r.status_code == (500 or 400):
             log.error("ERROR response : %s ", r.text)
             return False
         return True
