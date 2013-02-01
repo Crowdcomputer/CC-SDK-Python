@@ -25,6 +25,7 @@ DELETE='DELETE'
 class API():
     __token = ''
     __url = ''
+    __api_token=''
     
     def __init__(self,request):
 #    def register(self,t):
@@ -33,6 +34,7 @@ class API():
         log.debug("Location %s " , settings.CM_LOCATION)
         self.__token=request.session['token'];
         self.__url=settings.CM_LOCATION
+        self.__api_token=settings.APP_ID_TOKEN
 
     def __module_exists(self,module_name):
         try:
@@ -144,16 +146,16 @@ class API():
 
         
     def __apicallPut(self,url,data):
-            r=requests.put(url,auth=CMAuth(self.__getToken()),  data=data)
+            r=requests.put(url,auth=CMAuth(self.__getToken(),self.__api_token),  data=data)
             return r
         
     
     def __apicallPost(self,url,data):
-            r=requests.post(url,auth=CMAuth(self.__getToken()), data=data)
+            r=requests.post(url,auth=CMAuth(self.__getToken(),self.__api_token), data=data)
             return r
         
     def __apicallGet(self,url):
-            r=requests.get(url,auth=CMAuth(self.__getToken()))
+            r=requests.get(url,auth=CMAuth(self.__getToken(),self.__api_token))
             return r
         
     def validCall(self,r):
