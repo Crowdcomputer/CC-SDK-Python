@@ -4,9 +4,8 @@ Created on Jan 25, 2013
 @author: stefanotranquillini
 '''
 import logging
-from ccsdkpy.exceptions import TokenNotDefinedException, MissingConfiguration
-from ccsdkpy.auth import CMAuth
-from ccsdkpy.exceptions import MethodNotSupported
+from exceptions import TokenNotDefinedException, MissingConfiguration, MethodNotSupported
+from auth import CMAuth
 import requests
 import logging
 from django.conf import settings
@@ -27,12 +26,12 @@ class API():
     __token = ''
     __url = ''
     
-    def __init__(self, t):
+    def __init__(self,request):
 #    def register(self,t):
 #        d = shelve.open(__FILENAME)
 #        d['token'] = t 
         log.debug("Location %s " , settings.CM_LOCATION)
-        self.__token=t;
+        self.__token=request.session['token'];
         self.__url=settings.CM_LOCATION
 
     def __module_exists(self,module_name):
@@ -133,13 +132,16 @@ class API():
         log.debug('url %s',url)
         log.debug('data %s', data) 
         if (method == GET):
-            return  self.__apicallGet(url)
+            res = self.__apicallGet(url)
         elif (method == POST):
-            return self.__apicallPost(url,data)
+            res= self.__apicallPost(url,data)
         elif (method == PUT):
-            return self.__apicallPut(url,data)
+            res= self.__apicallPut(url,data)
         else:
             raise MethodNotSupported
+        self.validCall(res)
+        return res    
+
         
     def __apicallPut(self,url,data):
             r=requests.put(url,auth=CMAuth(self.__getToken()),  data=data)

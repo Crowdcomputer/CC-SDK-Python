@@ -13,9 +13,9 @@ setup(
     version = "0.0.1",
     author = "Stefano Tranquillini",
     author_email = "stefano.tranquillini@gmail.com",
-    description = ("The SDK for python to interact with the Crowd Computer"),
+    description = ("The SDK for python to interact with the Crowd Computer. Contains a Django APP to be used for the login"),
     license = "MIT",
-    packages=['ccsdkpy', 'testing'],
+    packages=['ccsdkpy','cclogin'],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Topic :: Software Development",
