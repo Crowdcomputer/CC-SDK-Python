@@ -18,7 +18,6 @@ def LoginAPI(request):
         url_login=settings.CM_LOCATION+"apilogin"
         data['cm_login']=url_login
         log.debug('execption')
-        print 'exception'
         return render_to_response('cclogin/login_cc.html', data, context_instance=RequestContext(request))
 
 
