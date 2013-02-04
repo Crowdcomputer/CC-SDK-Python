@@ -27,12 +27,12 @@ class API():
     __url = ''
     __api_token=''
     
-    def __init__(self,request):
+    def __init__(self,token):
 #    def register(self,t):
 #        d = shelve.open(__FILENAME)
 #        d['token'] = t 
         log.debug("Location %s " , settings.CM_LOCATION)
-        self.__token=request.session['token'];
+        self.__token=token
         self.__url=settings.CM_LOCATION
         self.__api_token=settings.APP_ID_TOKEN
 
@@ -78,6 +78,12 @@ class API():
         log.debug("Task Create res %s" % res.text)
         return res
     
+    def taskList(self, **pars):
+        url=self.__url+'api/processes/pk/tasklist/'.replace('pk', str(pars['pk']))
+        res=self.apiCall(GET,url)
+        log.debug("Task Create res %s" % res.text)
+        return res
+    
     def startStopProcess(self, **pars):
         url=self.__url+"api/processes/pk/startstop/".replace('pk', str(pars['pk']))
         res=self.apiCall(POST,url,pars)
@@ -86,6 +92,12 @@ class API():
     
     def taskInstances(self, **pars):
         url=self.__url+"api/task/pk/taskinstances/".replace('pk', str(pars['pk']))
+        res=self.apiCall(GET,url)
+        log.debug("taskInstance res %s" % res.text)
+        return res
+
+    def taskInstanceStatuses(self, **pars):
+        url=self.__url+"api/task/pk/taskinstances/status/".replace('pk', str(pars['pk']))
         res=self.apiCall(GET,url)
         log.debug("taskInstance res %s" % res.text)
         return res
