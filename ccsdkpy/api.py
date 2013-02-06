@@ -126,6 +126,17 @@ class API():
         res=self.apiCall(GET,url)
         log.debug("me res %s" % res.text)
         return res
+    
+    def contactUser(self, **pars):
+        url=self.__url+"api/users/pk/sendemail/".replace('pk', str(pars.pop('pk')))
+        ret = self.apiCall(POST,url,pars)
+#        log.debug("email res %s" % res.text)
+        return ret
+    
+    def notifyCreator(self, **pars):
+        pk = self.getValue(self.whoami(),'pk')
+        pars['pk']=pk
+        return self.contactUser(**pars)
 #process details
 
 #process start
@@ -140,8 +151,29 @@ class API():
 
 #create user
 
-#assign user to instance
 
+
+#    def asyncApiCall(self,method, url,data=None):   
+#        log.debug('url %s',url)
+#        log.debug('data %s', data) 
+#        if (method == POST):
+#            self.__asyncApicallPost(url,data)
+#        elif (method == PUT):
+#            self.__asyncApicallPut(url,data)
+#        else:
+#            raise MethodNotSupported
+#        return True
+#    
+#    
+#    def __asyncApicallPut(self,url,data):
+#            grequests.put(url,auth=CMAuth(self.__getToken(),self.__api_token),  data=data)
+#            return True
+#        
+#    
+#    def __asyncApicallPost(self,url,data):
+#            grequests.post(url,auth=CMAuth(self.__getToken(),self.__api_token), data=data)
+#            return True
+    
     def apiCall(self,method, url,data=None):   
         log.debug('url %s',url)
         log.debug('data %s', data) 
