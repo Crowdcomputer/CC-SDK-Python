@@ -5,11 +5,12 @@ Created on Jan 25, 2013
 '''
 import unittest
 
-from ccsdkpy import auth, api, utils
+from ccsdkpy import auth, api
 import logging
 import time 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
+
 
 
 #this test should use Mock instaead of calls, so it will be easier.

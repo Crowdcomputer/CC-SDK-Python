@@ -13,3 +13,6 @@ class MethodNotSupported(Exception):
     
 class MissingConfiguration(Exception):
     Message='Parameter is missing in the configuration'
+    
+class EmailIsTooLong(Exception):
+    Message='Email exceeds the 75 chars'

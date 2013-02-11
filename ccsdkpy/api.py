@@ -3,12 +3,13 @@ Created on Jan 25, 2013
 
 @author: stefanotranquillini
 '''
-import logging
-from exceptions import TokenNotDefinedException, MissingConfiguration, MethodNotSupported
+from exceptions import TokenNotDefinedException, MethodNotSupported
 from auth import CMAuth
 import requests
 import logging
 from django.conf import settings
+from ccsdkpy.exceptions import EmailIsTooLong
+from requests.models import Response
 #logging.basicConfig(level=logging.DEBUG)
 #
 log = logging.getLogger(__name__)
@@ -19,7 +20,7 @@ GET= 'GET'
 POST='POST'
 PUT='PUT'
 DELETE='DELETE'
-#logging.basicConfig(level=logging.DEBUG)
+#logging.basicConfig(level=logging.DEBUG)    
 #log = logging.getLogger(__name__)
 
 class API():
@@ -27,11 +28,10 @@ class API():
     __url = ''
     __api_token=''
     
-    def __init__(self,token):
+    def __init__(self, token):
 #    def register(self,t):
 #        d = shelve.open(__FILENAME)
 #        d['token'] = t 
-        log.debug("Location %s " , settings.CM_LOCATION)
         self.__token=token
         self.__url=settings.CM_LOCATION
         self.__api_token=settings.APP_ID_TOKEN
@@ -110,6 +110,15 @@ class API():
     
     def userGetOrCreate(self, **pars):
         url=self.__url+"api/users/"
+        if 'username' in pars:
+            if len(pars['username'])>30:
+                pars['username']=pars['username'][:30]
+        else:
+            log.debug('usename is not here')
+        if 'email' in pars:
+            if len(pars['email'])>75:
+                return None
+#                raise EmailIsTooLong
         res=self.apiCall(POST,url,pars)
         log.debug("User res %s" % res.text)
         return res
