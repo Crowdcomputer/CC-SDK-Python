@@ -28,13 +28,21 @@ class API():
     __url = ''
     __api_token=''
     
-    def __init__(self, token):
+    def __init__(self, token, api_token=None, location = None):
 #    def register(self,t):
 #        d = shelve.open(__FILENAME)
 #        d['token'] = t 
         self.__token=token
-        self.__url=settings.CM_LOCATION
-        self.__api_token=settings.APP_ID_TOKEN
+        if not location:
+            self.__url=settings.CM_LOCATION
+        else:
+            self.__url=location
+        if not self.__url.startswith('https://'):
+            log.warning('User HTTPS protocol')
+        if not api_token:
+            self.__api_token=settings.APP_ID_TOKEN
+        else:
+            self.__api_token=api_token
 
     def __module_exists(self,module_name):
         try:
@@ -120,6 +128,12 @@ class API():
                 return None
 #                raise EmailIsTooLong
         res=self.apiCall(POST,url,pars)
+        log.debug("User res %s" % res.text)
+        return res
+    
+    def userDetail(self, **pars):
+        url=self.__url+"api/users/pk/".replace('pk', str(pars['pk']))
+        res=self.apiCall(GET,url,pars)
         log.debug("User res %s" % res.text)
         return res
     
