@@ -7,7 +7,7 @@ from exceptions import TokenNotDefinedException, MethodNotSupported
 from auth import CMAuth
 import requests
 import logging
-from django.conf import settings
+
 from ccsdkpy.exceptions import EmailIsTooLong
 from requests.models import Response
 #logging.basicConfig(level=logging.DEBUG)
@@ -32,6 +32,11 @@ class API():
 #    def register(self,t):
 #        d = shelve.open(__FILENAME)
 #        d['token'] = t 
+        try:
+            from django.conf import settings
+        except Exception:
+            log.warning('django configuration cannot be loaded')
+            
         self.__token=token
         if not location:
             self.__url=settings.CM_LOCATION
@@ -117,7 +122,7 @@ class API():
         return res
     
     def userGetOrCreate(self, **pars):
-        url=self.__url+"api/users/"
+        url=self.__url+"api/user/create/"
         if 'username' in pars:
             if len(pars['username'])>30:
                 pars['username']=pars['username'][:30]
@@ -160,6 +165,12 @@ class API():
         pk = self.getValue(self.whoami(),'pk')
         pars['pk']=pk
         return self.contactUser(**pars)
+    
+    def createReward(self, **pars):
+        url=self.__url+'api/reward/create/'
+        res=self.apiCall(POST,url,pars)
+        log.debug("Reward Create res %s" % res.text)
+        return res
 #process details
 
 #process start
@@ -226,7 +237,6 @@ class API():
             return r
         
     def validCall(self,r):
-        log.warn("TODO")
         if r.status_code == (500 or 400):
             log.error("ERROR response : %s ", r.text)
             return False
