@@ -247,7 +247,7 @@ class API():
     #    return False
     
     def getValue(self,r,field):
-        ret = r.json[field]
+        ret = r.json()[field]
         log.debug("%s = %s"%(field, ret))
         return ret
     
